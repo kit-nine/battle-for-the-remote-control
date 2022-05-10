@@ -49,7 +49,6 @@ for i in range(4):
 
 class Player:
     global MOVEMENT_SPEED
-
     def __init__(self, x, y, framerate):
         self.x = x
         self.y = y
@@ -99,7 +98,6 @@ while True:
     if ARCADE_MODE == False:      
         if pressed[K_w]:
             player_1.face = "forward"
-            print(player_1.current_sprite)
             player_1.y -= MOVEMENT_SPEED
         if pressed[K_s]:
             player_1.face = "back"
@@ -110,9 +108,9 @@ while True:
         if pressed[K_d]:
             player_1.face = "right"
             player_1.x += MOVEMENT_SPEED
-        elif pressed[K_w] == False or pressed[K_s] == False or pressed[K_a] == False or pressed[K_d] == False:
+        elif pressed[K_w] == False and pressed[K_s] == False and pressed[K_a] == False and pressed[K_d] == False:
             player_1.face = "idle"
-            
+    #print(player_1.current_sprite_list[0])        
     player_1.draw(SCREEN)
     pygame.display.update()
     dt = CLOCK.tick(FPS)

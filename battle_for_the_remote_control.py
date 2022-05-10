@@ -133,12 +133,14 @@ while True:
                         gamemode = "menu"
                 if gamemode == "instructions":
                     SCREEN.blit(INSTRUCTIONS,(0,0))
-                    if event.key == K_SPACE: SCREEN.blit(SPACE_PURPOSE,(50,50))
-                    if event.key == K_RETURN: SCREEN.blit(RETURN_PURPOSE,(50,50))
-                    if event.key == K_UP: SCREEN.blit(UP_PURPOSE,(50,50))
-                    if event.key == K_DOWN: SCREEN.blit(DOWN_PURPOSE,(50,50))
-                    if event.key == K_LEFT: SCREEN.blit(LEFT_PURPOSE,(50,50))
-                    if event.key == K_RIGHT: SCREEN.blit(RIGHT_PURPOSE,(50,50))
+                    if event.key == K_SPACE: SCREEN.blit(SPACE_PURPOSE,(270,430))
+                    if event.key == K_RETURN: SCREEN.blit(RETURN_PURPOSE,(270,430))
+                    if event.key == K_UP: SCREEN.blit(UP_PURPOSE,(270,430))
+                    if event.key == K_DOWN: SCREEN.blit(DOWN_PURPOSE,(270,430))
+                    if event.key == K_LEFT: SCREEN.blit(LEFT_PURPOSE,(270,430))
+                    if event.key == K_RIGHT: SCREEN.blit(RIGHT_PURPOSE,(270,430))
+                if gamemode == "introduction":
+                    
 
     check = pygame.key.get_pressed() # Press & Hold
     if ARCADE_MODE == False:
