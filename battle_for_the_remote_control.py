@@ -1,16 +1,26 @@
 import pygame, sys
 from pygame.locals import *
 pygame.init()
+
 SCREEN = pygame.display.set_mode((640, 480))
 CLOCK = pygame.time.Clock()
 FPS = 30
 MOVEMENT_SPEED = 5
 ARCADE_MODE = False
 MENU = pygame.image.load("Main Menu.png")
+INSTRUCTIONS = pygame.image.load("Instructions.png")
+SPACE_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_space.png")
+RETURN_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_return.png")
+UP_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_up.png")
+DOWN_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_down.png")
+LEFT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_left.png")
+RIGHT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_right.png")
+
 left_click = False
 mouse_x,mouse_y = 0,0
 mouse_speed = 5
 gamemode = "menu"
+background_reset = True
 
 class Player:
     pass
@@ -74,18 +84,9 @@ class Button:
         screen.blit(label_surface, (self.rect.x+x_offset, self.rect.y+y_offset))
     
     def mouse_over(self,mouse_x,mouse_y):
+        global gamemode
         if self.rect.collidepoint(mouse_x,mouse_y):
             self.button_color = self.button_profile.hover_color
-            if self.value == 0:
-                gamemode = "singleplayer"
-            elif self.value == 1:
-                gamemode = "multiplayer"
-            elif self.value == 2:
-                gamemode = "introduction"
-            elif self.value == 3:
-                gamemode = "credits"
-            elif self.value == 4:
-                gamemode = "instructions"
         else:
             self.button_color = self.button_profile.button_color
 
@@ -100,47 +101,80 @@ instructions = Button(240, 395, 162, 38, "Instructions", 4, profile_0)
 button_list = [singleplayer,multiplayer,introduction,credits_,instructions]
 
 while True:
-    SCREEN.blit(MENU,(0,0))
+    if gamemode == "menu": SCREEN.blit(MENU,(0,0))
+    elif gamemode == "singleplayer": pass
+    elif gamemode == "multiplayer": pass
+    elif gamemode == "introduction": pass
+    elif gamemode == "credits_" : pass
     #left_click = False
     P1C.clicked = False
     # EVENT HANDLER
-    check = pygame.key.get_pressed() # Press & Hold
-    if check[K_UP]:
-        P1C.y -= P1C.speed
-    elif check[K_DOWN]:
-        P1C.y += P1C.speed
-    if check[K_LEFT]:
-        P1C.x -= P1C.speed
-    elif check[K_RIGHT]:
-        P1C.x += P1C.speed
+    # quitting
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-    #pressed = pygame.key.get_pressed()
-    #if ARCADE_MODE == False:
-    #  if pressed[K_w]:
-    #      # move back
-    #  if pressed[K_s]:
-    #      # move forward
-    #  if pressed[K_a]:
-    #      # move left
-    #  if pressed[K_d]:
-    #      # move right
-    #elif ARCADE_MODE == True:
-    #  if pressed[K_UP]:
-    #      # move back
-    #  if pressed[K_DOWN]:
-    #      # move forward
-    #  if pressed[K_LEFT]:
-    #      # move left
-    #  if pressed[K_RIGHT]:
-    #      # move right
-    for each_button in button_list:
-        each_button.draw(SCREEN)
-        if each_button.button_color == profile_0.hover_color and left_click == True:
-            value = each_button.value
-            print("button clicked!", value)
-    P1C.draw(SCREEN)
+        if event.type == KEYDOWN:
+            if ARCADE_MODE == False:
+                if gamemode == "menu":
+                    if event.key == K_SPACE:
+                        if singleplayer.rect.collidepoint(P1C.x,P1C.y):
+                            gamemode = "singleplayer"
+                        elif multiplayer.rect.collidepoint(P1C.x,P1C.y):
+                            gamemode = "multiplayer"
+                        elif introduction.rect.collidepoint(P1C.x,P1C.y):
+                            gamemode = "introduction"
+                        elif credits_.rect.collidepoint(P1C.x,P1C.y):
+                            gamemode = "credits"
+                        elif instructions.rect.collidepoint(P1C.x,P1C.y):
+                            gamemode = "instructions"
+                else:
+                    if event.key == K_ESCAPE:
+                        gamemode = "menu"
+                if gamemode == "instructions":
+                    SCREEN.blit(INSTRUCTIONS,(0,0))
+                    if event.key == K_SPACE: SCREEN.blit(SPACE_PURPOSE,(50,50))
+                    if event.key == K_RETURN: SCREEN.blit(RETURN_PURPOSE,(50,50))
+                    if event.key == K_UP: SCREEN.blit(UP_PURPOSE,(50,50))
+                    if event.key == K_DOWN: SCREEN.blit(DOWN_PURPOSE,(50,50))
+                    if event.key == K_LEFT: SCREEN.blit(LEFT_PURPOSE,(50,50))
+                    if event.key == K_RIGHT: SCREEN.blit(RIGHT_PURPOSE,(50,50))
+
+    check = pygame.key.get_pressed() # Press & Hold
+    if ARCADE_MODE == False:
+        if gamemode == "menu":
+            if check[K_UP]:
+                P1C.y -= P1C.speed
+            elif check[K_DOWN]:
+                P1C.y += P1C.speed
+            if check[K_LEFT]:
+                P1C.x -= P1C.speed
+            elif check[K_RIGHT]:
+                P1C.x += P1C.speed
+        elif gamemode == "singleplayer" or "multiplayer":
+            if check[K_w]:
+                pass
+            if check[K_s]:
+                pass
+            if check[K_a]:
+                pass
+            if check[K_d]:
+                pass
+    elif ARCADE_MODE == True:
+        if check[K_UP]:
+            pass
+        if check[K_DOWN]:
+            pass
+        if check[K_LEFT]:
+            pass
+        if check[K_RIGHT]:
+            pass
+    if gamemode == "menu":
+        for each_button in button_list:
+            each_button.draw(SCREEN)
+            if each_button.button_color == profile_0.hover_color and left_click == True:
+                value = each_button.value
+                print("button clicked!", value)
+        P1C.draw(SCREEN)
     pygame.display.update()
     CLOCK.tick(FPS)
