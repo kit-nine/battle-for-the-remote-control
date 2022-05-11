@@ -23,6 +23,8 @@ gamemode = "menu"
 background_reset = True
 dt = 0
 c1ilist,c1blist,c1flist,c1llist,c1rlist,c2ilist,c2blist,c2flist,c2llist,c2rlist,c3ilist,c3blist,c3flist,c3llist,c3rlist,c4ilist,c4blist,c4flist,c4llist,c4rlist,c5ilist,c5blist,c5flist,c5llist,c5rlist,c6ilist,c6blist,c6flist,c6llist,c6rlist = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
+m1ilist,m1blist,m1flist,m1llist,m1rlist = [],[],[],[],[]
+
 
 for i in range(4):
     c1ilist.append(pygame.image.load("c1\c1b" + str(0) + ".png").convert_alpha())
@@ -55,6 +57,11 @@ for i in range(4):
     c6flist.append(pygame.image.load("c6\c6f" + str(i) + ".png").convert_alpha())
     c6llist.append(pygame.image.load("c6\c6l" + str(i) + ".png").convert_alpha())
     c6rlist.append(pygame.image.load("c6\c6r" + str(i) + ".png").convert_alpha())
+    m1ilist.append(pygame.image.load("m1\m1b" + str(0) + ".png").convert_alpha())
+    m1blist.append(pygame.image.load("m1\m1b" + str(i) + ".png").convert_alpha())
+    m1flist.append(pygame.image.load("m1\m1f" + str(i) + ".png").convert_alpha())
+    m1llist.append(pygame.image.load("m1\m1l" + str(i) + ".png").convert_alpha())
+    m1rlist.append(pygame.image.load("m1\m1r" + str(i) + ".png").convert_alpha())
 
 class Player:
     global MOVEMENT_SPEED
@@ -69,15 +76,12 @@ class Player:
         self.interval = int(1000/framerate)
 
     def update(self):
-        # increase frame when appropriate
         self.cycle += dt
         if self.cycle >= self.interval:
             self.cycle = 0
             self.frame += 1
-        # reset frame w. a.
         if self.frame >= len(self.current_sprite_list):
             self.frame = 0
-        # change current_sprite_list based on face
         if self.face == "back":
             self.current_sprite_list = c1blist
         if self.face == "forward":
@@ -88,7 +92,6 @@ class Player:
             self.current_sprite_list = c1llist
         if self.face == "idle":
             self.current_sprite_list = c1ilist
-        # update current_sprite w. a.
         self.current_sprite = self.current_sprite_list[self.frame]
 
     def draw(self,surface):
@@ -98,7 +101,38 @@ class Player:
 player_1 = Player(250,250,6)
 
 class ColorMonster:
-    pass
+    def __init__(self,x,y,framerate):
+        self.x = x
+        self.y = y
+        self.face = "back"
+        self.frame = 0
+        self.cycle = 0
+        self.current_sprite_list = m1blist
+        self.current_sprite = self.current_sprite_list[self.frame]
+        self.interval = int(1000/framerate)
+
+    def update(self):
+        self.cycle += dt
+        if self.cycle >= self.interval:
+            self.cycle = 0
+            self.frame += 1
+        if self.frame >= len(self.current_sprite_list):
+            self.frame = 0
+        if self.face == "back":
+            self.current_sprite_list = m1blist
+        if self.face == "forward":
+            self.current_sprite_list = m1flist
+        if self.face == "right":
+            self.current_sprite_list = m1rlist
+        if self.face == "left":
+            self.current_sprite_list = m1llist
+        if self.face == "idle":
+            self.current_sprite_list = m1ilist
+        self.current_sprite = self.current_sprite_list[self.frame]
+
+    def draw(self,surface):
+        self.update()
+        surface.blit(self.current_sprite,(self.x,self.y))
 
 class Projectile:
     pass
@@ -128,10 +162,8 @@ class ButtonProfile:
         self.outline_width = outline_width
         self.text_color = text_color
         self.hover_color = hover_color
-        # self.border_radius = border_radius
         self.font_type = font_type
         self.font_size = font_size
-        # may manually change
         self.hover_outline = outline_color
         self.hover_text = text_color
         self.antialias = False
@@ -178,10 +210,7 @@ while True:
     elif gamemode == "multiplayer": pass
     elif gamemode == "introduction": pass
     elif gamemode == "credits_" : pass
-    #left_click = False
     P1C.clicked = False
-    # EVENT HANDLER
-    # quitting
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
