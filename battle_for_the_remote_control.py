@@ -21,36 +21,27 @@ TILE1 = pygame.image.load("tiling/tile1.png").convert()
 background = []
 temp = []
 
-for row in range(37):
+for row in range(38):
     for object in range(5):
-        temp.append("TILE0")
-        temp.append("TILE1")
+        temp.append(TILE0)
+        temp.append(TILE1)
     background.append(temp)
     temp = []
     for object in range(5):
-        temp.append("TILE1")
-        temp.append("TILE0")
+        temp.append(TILE1)
+        temp.append(TILE0)
     background.append(temp)
     temp = []
 
 background_dict = {}
 
-for row in range(76):
-    for col in range(1):
-        background_dict[str((row,col))] = str((abs(row*64-4288),col*64))
+for row in range(75):
+    for col in range(10):
+        background_dict[str((row,col))] = str(((row*64-512),col*64))
 
 # temp_string = background_dict.get("(17, 4)")
 # temp_string = temp_string[1:len(temp_string)-1:]
 # tuple = eval(temp_string)
-
-for xcoord in range(0,640,64):
-    #for ycoord in range(0,512,64):
-        #coordinate_pair = str("(" + str(xcoord) + ", ")
-        #coordinate_pair += str(str(ycoord) + ")")
-        key = list(background_dict.keys())[list(background_dict.values()).index("(512, 0)")]
-        key = key[1:len(key)-1:]
-        tuple = eval(key)
-        print(tuple)
 
 left_click = False
 mouse_x,mouse_y = 0,0
@@ -467,7 +458,14 @@ while True:
                 value = each_button.value
         P1C.draw(SCREEN)
     if gamemode == "singleplayer":
-        
+        for ycoord in range(-512,4288,64):
+            for xcoord in range(0,640,64):
+                coordinate_pair = str("(" + str(ycoord) + ", ")
+                coordinate_pair += str(str(xcoord) + ")")
+                key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
+                key = key[1:len(key)-1:]
+                tuple = eval(key)
+                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
         player_1.draw(SCREEN)
         test_1.draw(SCREEN)
     pygame.display.update()
