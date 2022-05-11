@@ -116,9 +116,12 @@ for i in range(4):
     m6llist.append(pygame.image.load("m6\m6l" + str(i) + ".png").convert_alpha())
     m6rlist.append(pygame.image.load("m6\m6r" + str(i) + ".png").convert_alpha())
 
+p1_proj_list = []
+p2_proj_list = []
+
 class Player:
     global MOVEMENT_SPEED
-    def __init__(self, x, y, framerate):
+    def __init__(self, x, y, framerate, proj_list):
         self.x = x
         self.y = y
         self.face = "back"
@@ -127,6 +130,7 @@ class Player:
         self.current_sprite_list = c1blist
         self.current_sprite = self.current_sprite_list[self.frame]
         self.interval = int(1000/framerate)
+        self.proj_list = proj_list
 
     def update(self):
         self.cycle += dt
@@ -150,8 +154,22 @@ class Player:
     def draw(self,surface):
         self.update()
         surface.blit(self.current_sprite,(self.x,self.y))
+    
+    def shoot(self):
+        if self.face == "back" or self.face == "idle":
+            self.proj_list.append(("0", self.y))
+        if self.face == "forward":
+            self.proj_list.append(("1", self.y + 19))
+        if self.face == "left":
+            self.proj_list.append(("2", self.x))
+        if self.face == "right":
+            self.proj_list.append(("3", self.x + 20))
+    
+    def block(self):
+        pass
 
-player_1 = Player(250,250,6)
+player_1 = Player(250,250,6,p1_proj_list)
+player_2 = Player(250,250,6,p2_proj_list)
 
 class ColorMonster:
     def __init__(self,x,y,framerate,monster):
@@ -463,6 +481,11 @@ while True:
                     if event.key == K_DOWN: SCREEN.blit(DOWN_PURPOSE,(270,430))
                     if event.key == K_LEFT: SCREEN.blit(LEFT_PURPOSE,(270,430))
                     if event.key == K_RIGHT: SCREEN.blit(RIGHT_PURPOSE,(270,430))
+                if gamemode == "minigame":
+                    if event.key == K_SPACE:
+                        player_1.shoot()
+                    if event.key == K_RETURN:
+                        player_1.block()
 
     check = pygame.key.get_pressed()
     if ARCADE_MODE == False:
@@ -475,7 +498,7 @@ while True:
                 P1C.x -= P1C.speed
             elif check[K_RIGHT]:
                 P1C.x += P1C.speed
-        if gamemode == "singleplayer":
+        if gamemode == "singleplayer" or gamemode == "minigame":
             SCREEN.fill((0,0,0))
             if check[K_w]:
                 player_1.face = "forward"
@@ -498,7 +521,7 @@ while True:
             if each_button.button_color == profile_0.hover_color and left_click == True:
                 value = each_button.value
         P1C.draw(SCREEN)
-    if gamemode == "singleplayer":
+    if gamemode == "minigame":
         for ycoord in range(-512,4288,64):
             for xcoord in range(0,640,64):
                 coordinate_pair = str("(" + str(ycoord) + ", ")
@@ -508,10 +531,18 @@ while True:
                 tuple = eval(key)
                 SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
         player_1.draw(SCREEN)
+    if gamemode == "singleplayer":
+        SCREEN.fill((128, 128, 128))
+        player_1.draw(SCREEN)
         monster_0.draw(SCREEN)
         monster_1.draw(SCREEN)
         monster_2.draw(SCREEN)
         monster_3.draw(SCREEN)
         monster_4.draw(SCREEN)
+        monster_5.draw(SCREEN)
+        monster_6.draw(SCREEN)
+        monster_7.draw(SCREEN)
+        monster_8.draw(SCREEN)
+        monster_9.draw(SCREEN)
     pygame.display.update()
     CLOCK.tick(FPS)
