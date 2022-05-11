@@ -8,13 +8,49 @@ FPS = 30
 MOVEMENT_SPEED = 5
 ARCADE_MODE = False
 MENU = pygame.image.load("Main Menu.png")
-INSTRUCTIONS = pygame.image.load("Instructions.png")
-SPACE_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_space.png")
-RETURN_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_return.png")
-UP_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_up.png")
-DOWN_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_down.png")
-LEFT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_left.png")
-RIGHT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_right.png")
+INSTRUCTIONS = pygame.image.load("Instructions.png").convert()
+SPACE_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_space.png").convert()
+RETURN_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_return.png").convert()
+UP_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_up.png").convert()
+DOWN_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_down.png").convert()
+LEFT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_left.png").convert()
+RIGHT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_right.png").convert()
+TILE0 = pygame.image.load("tiling/tile0.png").convert()
+TILE1 = pygame.image.load("tiling/tile1.png").convert()
+
+background = []
+temp = []
+
+for row in range(37):
+    for object in range(5):
+        temp.append("TILE0")
+        temp.append("TILE1")
+    background.append(temp)
+    temp = []
+    for object in range(5):
+        temp.append("TILE1")
+        temp.append("TILE0")
+    background.append(temp)
+    temp = []
+
+background_dict = {}
+
+for row in range(76):
+    for col in range(1):
+        background_dict[str((row,col))] = str((abs(row*64-4288),col*64))
+
+# temp_string = background_dict.get("(17, 4)")
+# temp_string = temp_string[1:len(temp_string)-1:]
+# tuple = eval(temp_string)
+
+for xcoord in range(0,640,64):
+    #for ycoord in range(0,512,64):
+        #coordinate_pair = str("(" + str(xcoord) + ", ")
+        #coordinate_pair += str(str(ycoord) + ")")
+        key = list(background_dict.keys())[list(background_dict.values()).index("(512, 0)")]
+        key = key[1:len(key)-1:]
+        tuple = eval(key)
+        print(tuple)
 
 left_click = False
 mouse_x,mouse_y = 0,0
@@ -357,6 +393,8 @@ instructions = Button(240, 395, 162, 38, "Instructions", 4, profile_0)
 
 button_list = [singleplayer,multiplayer,introduction,credits_,instructions]
 
+
+
 while True:
     if gamemode == "menu": SCREEN.blit(MENU,(0,0))
     elif gamemode == "singleplayer": pass
@@ -429,8 +467,8 @@ while True:
                 value = each_button.value
         P1C.draw(SCREEN)
     if gamemode == "singleplayer":
+        
         player_1.draw(SCREEN)
         test_1.draw(SCREEN)
-    print(gamemode)
     pygame.display.update()
     CLOCK.tick(FPS)
