@@ -28,15 +28,12 @@ class ColorMonster:
         self.interval = int(1000/framerate)
 
     def update(self):
-        # increase frame when appropriate
-        self.cycle += dt
+        self.cycle += dt # this error doesnt matter because this code doesnt need to run, it only works in the main file
         if self.cycle >= self.interval:
             self.cycle = 0
             self.frame += 1
-        # reset frame w. a.
         if self.frame >= len(self.current_sprite_list):
             self.frame = 0
-        # change current_sprite_list based on face
         if self.face == "back":
             self.current_sprite_list = m1blist
         if self.face == "forward":
@@ -47,10 +44,13 @@ class ColorMonster:
             self.current_sprite_list = m1llist
         if self.face == "idle":
             self.current_sprite_list = m1ilist
-        # update current_sprite w. a.
         self.current_sprite = self.current_sprite_list[self.frame]
 
     def draw(self,surface):
         self.update()
         surface.blit(self.current_sprite,(self.x,self.y))
+    
+    # going to need another method for movement on its own, just a simple algorithm that
+    # moves it across the screen and then teleports it to a specific place so it looks like
+    # theres more of them on the screen at once than there really are
     
