@@ -154,13 +154,19 @@ class Player:
 player_1 = Player(250,250,6)
 
 class ColorMonster:
-    def __init__(self,x,y,framerate):
+    def __init__(self,x,y,framerate,monster):
         self.x = x
         self.y = y
         self.face = "back"
         self.frame = 0
         self.cycle = 0
-        self.current_sprite_list = m1blist
+        self.monster = monster
+        if self.monster == 1:self.current_sprite_list = m1blist
+        if self.monster == 2:self.current_sprite_list = m2blist
+        if self.monster == 3:self.current_sprite_list = m3blist
+        if self.monster == 4:self.current_sprite_list = m4blist
+        if self.monster == 5:self.current_sprite_list = m5blist
+        if self.monster == 6:self.current_sprite_list = m6blist
         self.current_sprite = self.current_sprite_list[self.frame]
         self.interval = int(1000/framerate)
         self.direction = random.randint(0,3)
@@ -175,15 +181,40 @@ class ColorMonster:
         if self.frame >= len(self.current_sprite_list):
             self.frame = 0
         if self.face == "back":
-            self.current_sprite_list = m1blist
+            if self.monster == 1:self.current_sprite_list = m1blist
+            if self.monster == 2:self.current_sprite_list = m2blist
+            if self.monster == 3:self.current_sprite_list = m3blist
+            if self.monster == 4:self.current_sprite_list = m4blist
+            if self.monster == 5:self.current_sprite_list = m5blist
+            if self.monster == 6:self.current_sprite_list = m6blist
         if self.face == "forward":
-            self.current_sprite_list = m1flist
+            if self.monster == 1:self.current_sprite_list = m1flist
+            if self.monster == 2:self.current_sprite_list = m2flist
+            if self.monster == 3:self.current_sprite_list = m3flist
+            if self.monster == 4:self.current_sprite_list = m4flist
+            if self.monster == 5:self.current_sprite_list = m5flist
+            if self.monster == 6:self.current_sprite_list = m6flist
         if self.face == "right":
-            self.current_sprite_list = m1rlist
+            if self.monster == 1:self.current_sprite_list = m1rlist
+            if self.monster == 2:self.current_sprite_list = m2rlist
+            if self.monster == 3:self.current_sprite_list = m3rlist
+            if self.monster == 4:self.current_sprite_list = m4rlist
+            if self.monster == 5:self.current_sprite_list = m5rlist
+            if self.monster == 6:self.current_sprite_list = m6rlist
         if self.face == "left":
-            self.current_sprite_list = m1llist
+            if self.monster == 1:self.current_sprite_list = m1llist
+            if self.monster == 2:self.current_sprite_list = m2llist
+            if self.monster == 3:self.current_sprite_list = m3llist
+            if self.monster == 4:self.current_sprite_list = m4llist
+            if self.monster == 5:self.current_sprite_list = m5llist
+            if self.monster == 6:self.current_sprite_list = m6llist
         if self.face == "idle":
-            self.current_sprite_list = m1ilist
+            if self.monster == 1:self.current_sprite_list = m1ilist
+            if self.monster == 2:self.current_sprite_list = m2ilist
+            if self.monster == 3:self.current_sprite_list = m3ilist
+            if self.monster == 4:self.current_sprite_list = m4ilist
+            if self.monster == 5:self.current_sprite_list = m5ilist
+            if self.monster == 6:self.current_sprite_list = m6ilist
         self.current_sprite = self.current_sprite_list[self.frame]
 
     def attack(self):
@@ -312,7 +343,17 @@ class ColorMonster:
         if self.monster_rect.colliderect(self.player_rect):
             gamemode = "minigame"
 
-test_1 = ColorMonster(50,50,6)
+monster_0 = ColorMonster(50,50,6,1)
+monster_1 = ColorMonster(50,50,6,2)
+monster_2 = ColorMonster(50,50,6,3)
+monster_3 = ColorMonster(50,50,6,4)
+monster_4 = ColorMonster(50,50,6,5)
+monster_5 = ColorMonster(50,50,6,1)
+monster_6 = ColorMonster(50,50,6,2)
+monster_7 = ColorMonster(50,50,6,3)
+monster_8 = ColorMonster(50,50,6,4)
+monster_9 = ColorMonster(50,50,6,5)
+
 
 class Projectile:
     pass
@@ -467,6 +508,10 @@ while True:
                 tuple = eval(key)
                 SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
         player_1.draw(SCREEN)
-        test_1.draw(SCREEN)
+        monster_0.draw(SCREEN)
+        monster_1.draw(SCREEN)
+        monster_2.draw(SCREEN)
+        monster_3.draw(SCREEN)
+        monster_4.draw(SCREEN)
     pygame.display.update()
     CLOCK.tick(FPS)
