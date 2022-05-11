@@ -30,31 +30,26 @@ for i in range(4):
     c1flist.append(pygame.image.load("c1\c1f" + str(i) + ".png").convert_alpha())
     c1llist.append(pygame.image.load("c1\c1l" + str(i) + ".png").convert_alpha())
     c1rlist.append(pygame.image.load("c1\c1r" + str(i) + ".png").convert_alpha())
-for i in range(4):
     c2ilist.append(pygame.image.load("c2\c2b" + str(0) + ".png").convert_alpha())
     c2blist.append(pygame.image.load("c2\c2b" + str(i) + ".png").convert_alpha())
     c2flist.append(pygame.image.load("c2\c2f" + str(i) + ".png").convert_alpha())
     c2llist.append(pygame.image.load("c2\c2l" + str(i) + ".png").convert_alpha())
     c2rlist.append(pygame.image.load("c2\c2r" + str(i) + ".png").convert_alpha())
-for i in range(4):
     c3ilist.append(pygame.image.load("c3\c3b" + str(0) + ".png").convert_alpha())
     c3blist.append(pygame.image.load("c3\c3b" + str(i) + ".png").convert_alpha())
     c3flist.append(pygame.image.load("c3\c3f" + str(i) + ".png").convert_alpha())
     c3llist.append(pygame.image.load("c3\c3l" + str(i) + ".png").convert_alpha())
     c3rlist.append(pygame.image.load("c3\c3r" + str(i) + ".png").convert_alpha())
-for i in range(4):
     c4ilist.append(pygame.image.load("c4\c4b" + str(0) + ".png").convert_alpha())
     c4blist.append(pygame.image.load("c4\c4b" + str(i) + ".png").convert_alpha())
     c4flist.append(pygame.image.load("c4\c4f" + str(i) + ".png").convert_alpha())
     c4llist.append(pygame.image.load("c4\c4l" + str(i) + ".png").convert_alpha())
     c4rlist.append(pygame.image.load("c4\c4r" + str(i) + ".png").convert_alpha())
-for i in range(4):
     c5ilist.append(pygame.image.load("c5\c5b" + str(0) + ".png").convert_alpha())
     c5blist.append(pygame.image.load("c5\c5b" + str(i) + ".png").convert_alpha())
     c5flist.append(pygame.image.load("c5\c5f" + str(i) + ".png").convert_alpha())
     c5llist.append(pygame.image.load("c5\c5l" + str(i) + ".png").convert_alpha())
     c5rlist.append(pygame.image.load("c5\c5r" + str(i) + ".png").convert_alpha())
-for i in range(4):
     c6ilist.append(pygame.image.load("c6\c6b" + str(0) + ".png").convert_alpha())
     c6blist.append(pygame.image.load("c6\c6b" + str(i) + ".png").convert_alpha())
     c6flist.append(pygame.image.load("c6\c6f" + str(i) + ".png").convert_alpha())
