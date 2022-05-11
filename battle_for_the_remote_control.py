@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 from pygame.locals import *
 pygame.init()
 
@@ -23,10 +23,10 @@ gamemode = "menu"
 background_reset = True
 dt = 0
 c1ilist,c1blist,c1flist,c1llist,c1rlist,c2ilist,c2blist,c2flist,c2llist,c2rlist,c3ilist,c3blist,c3flist,c3llist,c3rlist,c4ilist,c4blist,c4flist,c4llist,c4rlist,c5ilist,c5blist,c5flist,c5llist,c5rlist,c6ilist,c6blist,c6flist,c6llist,c6rlist = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
-m1ilist,m1blist,m1flist,m1llist,m1rlist = [],[],[],[],[]
-
+m1ilist,m1blist,m1flist,m1llist,m1rlist,m2ilist,m2blist,m2flist,m2llist,m2rlist,m3ilist,m3blist,m3flist,m3llist,m3rlist,m4ilist,m4blist,m4flist,m4llist,m4rlist,m5ilist,m5blist,m5flist,m5llist,m5rlist,m6ilist,m6blist,m6flist,m6llist,m6rlist = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
 
 for i in range(4):
+    # characters
     c1ilist.append(pygame.image.load("c1\c1b" + str(0) + ".png").convert_alpha())
     c1blist.append(pygame.image.load("c1\c1b" + str(i) + ".png").convert_alpha())
     c1flist.append(pygame.image.load("c1\c1f" + str(i) + ".png").convert_alpha())
@@ -57,11 +57,37 @@ for i in range(4):
     c6flist.append(pygame.image.load("c6\c6f" + str(i) + ".png").convert_alpha())
     c6llist.append(pygame.image.load("c6\c6l" + str(i) + ".png").convert_alpha())
     c6rlist.append(pygame.image.load("c6\c6r" + str(i) + ".png").convert_alpha())
+    # color monsters
     m1ilist.append(pygame.image.load("m1\m1b" + str(0) + ".png").convert_alpha())
     m1blist.append(pygame.image.load("m1\m1b" + str(i) + ".png").convert_alpha())
     m1flist.append(pygame.image.load("m1\m1f" + str(i) + ".png").convert_alpha())
     m1llist.append(pygame.image.load("m1\m1l" + str(i) + ".png").convert_alpha())
     m1rlist.append(pygame.image.load("m1\m1r" + str(i) + ".png").convert_alpha())
+    m2ilist.append(pygame.image.load("m2\m2b" + str(0) + ".png").convert_alpha())
+    m2blist.append(pygame.image.load("m2\m2b" + str(i) + ".png").convert_alpha())
+    m2flist.append(pygame.image.load("m2\m2f" + str(i) + ".png").convert_alpha())
+    m2llist.append(pygame.image.load("m2\m2l" + str(i) + ".png").convert_alpha())
+    m2rlist.append(pygame.image.load("m2\m2r" + str(i) + ".png").convert_alpha())
+    m3ilist.append(pygame.image.load("m3\m3b" + str(0) + ".png").convert_alpha())
+    m3blist.append(pygame.image.load("m3\m3b" + str(i) + ".png").convert_alpha())
+    m3flist.append(pygame.image.load("m3\m3f" + str(i) + ".png").convert_alpha())
+    m3llist.append(pygame.image.load("m3\m3l" + str(i) + ".png").convert_alpha())
+    m3rlist.append(pygame.image.load("m3\m3r" + str(i) + ".png").convert_alpha())
+    m4ilist.append(pygame.image.load("m4\m4b" + str(0) + ".png").convert_alpha())
+    m4blist.append(pygame.image.load("m4\m4b" + str(i) + ".png").convert_alpha())
+    m4flist.append(pygame.image.load("m4\m4f" + str(i) + ".png").convert_alpha())
+    m4llist.append(pygame.image.load("m4\m4l" + str(i) + ".png").convert_alpha())
+    m4rlist.append(pygame.image.load("m4\m4r" + str(i) + ".png").convert_alpha())
+    m5ilist.append(pygame.image.load("m5\m5b" + str(0) + ".png").convert_alpha())
+    m5blist.append(pygame.image.load("m5\m5b" + str(i) + ".png").convert_alpha())
+    m5flist.append(pygame.image.load("m5\m5f" + str(i) + ".png").convert_alpha())
+    m5llist.append(pygame.image.load("m5\m5l" + str(i) + ".png").convert_alpha())
+    m5rlist.append(pygame.image.load("m5\m5r" + str(i) + ".png").convert_alpha())
+    m6ilist.append(pygame.image.load("m6\m6b" + str(0) + ".png").convert_alpha())
+    m6blist.append(pygame.image.load("m6\m6b" + str(i) + ".png").convert_alpha())
+    m6flist.append(pygame.image.load("m6\m6f" + str(i) + ".png").convert_alpha())
+    m6llist.append(pygame.image.load("m6\m6l" + str(i) + ".png").convert_alpha())
+    m6rlist.append(pygame.image.load("m6\m6r" + str(i) + ".png").convert_alpha())
 
 class Player:
     global MOVEMENT_SPEED
@@ -110,6 +136,9 @@ class ColorMonster:
         self.current_sprite_list = m1blist
         self.current_sprite = self.current_sprite_list[self.frame]
         self.interval = int(1000/framerate)
+        self.direction = random.randint(0,3)
+        self.x_change = 0
+        self.y_change = 0
 
     def update(self):
         self.cycle += dt
@@ -130,9 +159,133 @@ class ColorMonster:
             self.current_sprite_list = m1ilist
         self.current_sprite = self.current_sprite_list[self.frame]
 
+    def attack(self):
+        if self.direction == 0:
+            self.face = "forward"
+            if self.y + 19 > 0:
+                self.y -= MOVEMENT_SPEED + 1
+            else:
+                self.direction = random.randint(0,3)
+                if self.direction == 0:
+                    self.y_change = 1
+                elif self.direction == 1:
+                    self.y_change = 2
+                elif self.direction == 2:
+                    self.x_change = 1
+                elif self.direction == 3:
+                    self.x_change = 2
+                if self.x_change == 1:
+                    self.x = 623
+                elif self.x_change == 2:
+                    self.x = 0
+                else:
+                    self.x = random.randint(0,623)
+                if self.y_change == 1:
+                    self.y = 461
+                elif self.y_change == 2:
+                    self.y = 0
+                else:
+                    self.y = random.randint(0,461)
+                self.x_change,self.y_change = 0,0
+                
+        if self.direction == 1:
+            self.face = "back"
+            if self.y < 480:
+                self.y += MOVEMENT_SPEED + 1
+            else:
+                self.direction = random.randint(0,3)
+                if self.direction == 0:
+                    self.y_change = 1
+                elif self.direction == 1:
+                    self.y_change = 2
+                elif self.direction == 2:
+                    self.x_change = 1
+                elif self.direction == 3:
+                    self.x_change = 2
+                if self.x_change == 1:
+                    self.x = 623
+                elif self.x_change == 2:
+                    self.x = 0
+                else:
+                    self.x = random.randint(0,623)
+                if self.y_change == 1:
+                    self.y = 461
+                elif self.y_change == 2:
+                    self.y = 0
+                else:
+                    self.y = random.randint(0,461)
+                self.x_change,self.y_change = 0,0
+                
+        if self.direction == 2:
+            self.face = "left"
+            if self.x + 17 > 0:
+                self.x -= MOVEMENT_SPEED + 1
+            else:
+                self.direction = random.randint(0,3)
+                if self.direction == 0:
+                    self.y_change = 1
+                elif self.direction == 1:
+                    self.y_change = 2
+                elif self.direction == 2:
+                    self.x_change = 1
+                elif self.direction == 3:
+                    self.x_change = 2
+                if self.x_change == 1:
+                    self.x = 623
+                elif self.x_change == 2:
+                    self.x = 0
+                else:
+                    self.x = random.randint(0,623)
+                if self.y_change == 1:
+                    self.y = 461
+                elif self.y_change == 2:
+                    self.y = 0
+                else:
+                    self.y = random.randint(0,461)
+                self.x_change,self.y_change = 0,0
+                
+        if self.direction == 3:
+            self.face = "right"
+            if self.x < 640:
+                self.x += MOVEMENT_SPEED + 1
+            else:
+                self.direction = random.randint(0,3)
+                if self.direction == 0:
+                    self.y_change = 1
+                elif self.direction == 1:
+                    self.y_change = 2
+                elif self.direction == 2:
+                    self.x_change = 1
+                elif self.direction == 3:
+                    self.x_change = 2
+                if self.x_change == 1:
+                    self.x = 623
+                elif self.x_change == 2:
+                    self.x = 0
+                else:
+                    self.x = random.randint(0,623)
+                if self.y_change == 1:
+                    self.y = 461
+                elif self.y_change == 2:
+                    self.y = 0
+                else:
+                    self.y = random.randint(0,461)
+                self.x_change,self.y_change = 0,0
+                
     def draw(self,surface):
+        self.attack()
         self.update()
+        self.collision(player_1.x, player_1.y, 19, 20)
         surface.blit(self.current_sprite,(self.x,self.y))
+        
+    def collision(self,player_x,player_y,player_w,player_h):
+        global gamemode
+        self.player_rect = pygame.Rect(player_x,player_y,player_w,player_h)
+        self.monster_rect = pygame.Rect(self.x,self.y,17,19)
+        if self.monster_rect.colliderect(self.player_rect):
+            gamemode = "minigame"
+
+test_1 = ColorMonster(50,50,6)
 
 class Projectile:
     pass
@@ -277,5 +430,7 @@ while True:
         P1C.draw(SCREEN)
     if gamemode == "singleplayer":
         player_1.draw(SCREEN)
+        test_1.draw(SCREEN)
+    print(gamemode)
     pygame.display.update()
     CLOCK.tick(FPS)
