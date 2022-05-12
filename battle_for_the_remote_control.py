@@ -438,8 +438,10 @@ multiplayer = Button(391, 210, 155, 60, "Multiplayer", 1, profile_0)
 introduction = Button(162, 309, 150, 49, "Introduction", 2, profile_0)
 credits_ = Button(347, 308, 99, 48, "Credits", 3, profile_0)
 instructions = Button(240, 395, 162, 38, "Instructions", 4, profile_0)
+# temporary outro button so I can show off the outro
+outro = Button(240, 438, 162, 38, "Outro", 5, profile_0)
 # put all the buttons in a list
-button_list = [singleplayer,multiplayer,introduction,credits_,instructions]
+button_list = [singleplayer,multiplayer,introduction,credits_,instructions,outro]
 
 # MAIN GAME LOOP
 
@@ -455,115 +457,140 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == KEYDOWN:
-            if ARCADE_MODE == False:
-                if gamemode == "menu":
-                    if event.key == K_SPACE:
-                        if singleplayer.rect.collidepoint(P1C.x,P1C.y):
-                            gamemode = "singleplayer"
-                            playing_sound_select = True
-                        elif multiplayer.rect.collidepoint(P1C.x,P1C.y):
-                            gamemode = "multiplayer"
-                            playing_sound_select = True
-                        elif introduction.rect.collidepoint(P1C.x,P1C.y):
-                            gamemode = "introduction"
-                            playing_sound_select = True
-                        elif credits_.rect.collidepoint(P1C.x,P1C.y):
-                            gamemode = "credits"
-                            playing_sound_select = True
-                        elif instructions.rect.collidepoint(P1C.x,P1C.y):
-                            gamemode = "instructions"
-                            playing_sound_select = True
-                        if playing_sound_select == True:
-                            pygame.mixer.Sound.play(SELECT)
-                            playing_sound_select = False
-                else:
-                    if event.key == K_ESCAPE:
-                        gamemode = "menu"
-                if gamemode == "instructions":
-                    SCREEN.blit(INSTRUCTIONS,(0,0))
-                    if event.key == K_SPACE or event.key == K_q: SCREEN.blit(SPACE_PURPOSE,(270,430))
-                    if event.key == K_RETURN or event.key == K_j: SCREEN.blit(RETURN_PURPOSE,(270,430))
-                    if event.key == K_UP or event.key == K_r: SCREEN.blit(UP_PURPOSE,(270,430))
-                    if event.key == K_DOWN or event.key == K_f: SCREEN.blit(DOWN_PURPOSE,(270,430))
-                    if event.key == K_LEFT or event.key == K_d: SCREEN.blit(LEFT_PURPOSE,(270,430))
-                    if event.key == K_RIGHT or event.key == K_g: SCREEN.blit(RIGHT_PURPOSE,(270,430))
-                if gamemode == "s_minigame":
-                    if event.key == K_SPACE:
-                        player_1.shoot()
-                    if event.key == K_RETURN:
-                        player_1.block()
-                if gamemode == "m_minigame":
-                    if event.key == K_SPACE:
-                        player_1.shoot()
-                    if event.key == K_RETURN:
-                        player_1.block()
-                    if event.key == K_q:
-                        player_2.shoot()
-                    if event.key == K_j:
-                        player_2.block()
+            if gamemode == "menu":
+                if event.key == K_SPACE:
+                    if singleplayer.rect.collidepoint(P1C.x,P1C.y):
+                        gamemode = "singleplayer"
+                        playing_sound_select = True
+                    elif multiplayer.rect.collidepoint(P1C.x,P1C.y):
+                        gamemode = "multiplayer"
+                        playing_sound_select = True
+                    elif introduction.rect.collidepoint(P1C.x,P1C.y):
+                        gamemode = "introduction"
+                        playing_sound_select = True
+                    elif credits_.rect.collidepoint(P1C.x,P1C.y):
+                        gamemode = "credits"
+                        playing_sound_select = True
+                    elif instructions.rect.collidepoint(P1C.x,P1C.y):
+                        gamemode = "instructions"
+                        playing_sound_select = True
+                    elif outro.rect.collidepoint(P1C.x,P1C.y):
+                        gamemode = "outro"
+                        playing_sound_select = True
+                    if playing_sound_select == True:
+                        pygame.mixer.Sound.play(SELECT)
+                        playing_sound_select = False
+            else:
+                if event.key == K_ESCAPE:
+                    gamemode = "menu"
+            if gamemode == "instructions":
+                SCREEN.blit(INSTRUCTIONS,(0,0))
+                if event.key == K_SPACE or event.key == K_q: SCREEN.blit(SPACE_PURPOSE,(270,430))
+                if event.key == K_RETURN or event.key == K_j: SCREEN.blit(RETURN_PURPOSE,(270,430))
+                if event.key == K_UP or event.key == K_r: SCREEN.blit(UP_PURPOSE,(270,430))
+                if event.key == K_DOWN or event.key == K_f: SCREEN.blit(DOWN_PURPOSE,(270,430))
+                if event.key == K_LEFT or event.key == K_d: SCREEN.blit(LEFT_PURPOSE,(270,430))
+                if event.key == K_RIGHT or event.key == K_g: SCREEN.blit(RIGHT_PURPOSE,(270,430))
+            if gamemode == "s_minigame":
+                if event.key == K_SPACE:
+                    player_1.shoot()
+                if event.key == K_RETURN:
+                    player_1.block()
+            if gamemode == "m_minigame":
+                if event.key == K_SPACE:
+                    player_1.shoot()
+                if event.key == K_RETURN:
+                    player_1.block()
+                if event.key == K_q:
+                    player_2.shoot()
+                if event.key == K_j:
+                    player_2.block()
     check = pygame.key.get_pressed()
-    if ARCADE_MODE == False:
-        if gamemode == "menu":
-            if check[K_UP]:
-                P1C.y -= P1C.speed
-            elif check[K_DOWN]:
-                P1C.y += P1C.speed
-            if check[K_LEFT]:
-                P1C.x -= P1C.speed
-            elif check[K_RIGHT]:
-                P1C.x += P1C.speed
-        if gamemode == "singleplayer":
-            SCREEN.fill((0,0,0))
-            if check[K_UP]:
-                player_1.face = "forward"
-                player_1.y -= MOVEMENT_SPEED
-            if check[K_DOWN]:
-                player_1.face = "back"
-                player_1.y += MOVEMENT_SPEED
-            if check[K_LEFT]:
-                player_1.face = "left"
-                player_1.x -= MOVEMENT_SPEED
-            if check[K_RIGHT]:
-                player_1.face = "right"
-                player_1.x += MOVEMENT_SPEED
-            elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
-                player_1.face = "idle"
-        if gamemode = "multiplayer":
-            SCREEN.fill((0,0,0))
-            if check[K_UP]:
-                player_1.face = "forward"
-                player_1.y -= MOVEMENT_SPEED
-            if check[K_DOWN]:
-                player_1.face = "back"
-                player_1.y += MOVEMENT_SPEED
-            if check[K_LEFT]:
-                player_1.face = "left"
-                player_1.x -= MOVEMENT_SPEED
-            if check[K_RIGHT]:
-                player_1.face = "right"
-                player_1.x += MOVEMENT_SPEED
-            elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
-                player_1.face = "idle"
-            if check[K_r]:
-                player_2.face = "forward"
-                player_2.y -= MOVEMENT_SPEED
-            if check[K_f]:
-                player_2.face = "back"
-                player_2.y += MOVEMENT_SPEED
-            if check[K_d]:
-                player_2.face = "left"
-                player_2.x -= MOVEMENT_SPEED
-            if check[K_g]:
-                player_2.face = "right"
-                player_2.x += MOVEMENT_SPEED
-            elif check[K_r] == False and check[K_f] == False and check[K_d] == False and check[K_g] == False:
-                player_2.face = "idle"
     if gamemode == "menu":
+        if check[K_UP]:
+            P1C.y -= P1C.speed
+        elif check[K_DOWN]:
+            P1C.y += P1C.speed
+        if check[K_LEFT]:
+            P1C.x -= P1C.speed
+        elif check[K_RIGHT]:
+            P1C.x += P1C.speed
         for each_button in button_list:
             each_button.draw(SCREEN)
             if each_button.button_color == profile_0.hover_color and left_click == True:
                 value = each_button.value
         P1C.draw(SCREEN)
+    if gamemode == "singleplayer":
+        SCREEN.fill((0,0,0))
+        if check[K_UP]:
+            player_1.face = "forward"
+            player_1.y -= MOVEMENT_SPEED
+        if check[K_DOWN]:
+            player_1.face = "back"
+            player_1.y += MOVEMENT_SPEED
+        if check[K_LEFT]:
+            player_1.face = "left"
+            player_1.x -= MOVEMENT_SPEED
+        if check[K_RIGHT]:
+            player_1.face = "right"
+            player_1.x += MOVEMENT_SPEED
+        elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
+            player_1.face = "idle"
+        SCREEN.fill((128, 128, 128))
+        player_1.draw(SCREEN)
+        monster_0.draw(SCREEN)
+        monster_1.draw(SCREEN)
+        monster_2.draw(SCREEN)
+        monster_3.draw(SCREEN)
+        monster_4.draw(SCREEN)
+        monster_5.draw(SCREEN)
+        monster_6.draw(SCREEN)
+        monster_7.draw(SCREEN)
+        monster_8.draw(SCREEN)
+        monster_9.draw(SCREEN)
+    if gamemode == "multiplayer":
+        SCREEN.fill((0,0,0))
+        if check[K_UP]:
+            player_1.face = "forward"
+            player_1.y -= MOVEMENT_SPEED
+        if check[K_DOWN]:
+            player_1.face = "back"
+            player_1.y += MOVEMENT_SPEED
+        if check[K_LEFT]:
+            player_1.face = "left"
+            player_1.x -= MOVEMENT_SPEED
+        if check[K_RIGHT]:
+            player_1.face = "right"
+            player_1.x += MOVEMENT_SPEED
+        elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
+            player_1.face = "idle"
+        if check[K_r]:
+            player_2.face = "forward"
+            player_2.y -= MOVEMENT_SPEED
+        if check[K_f]:
+            player_2.face = "back"
+            player_2.y += MOVEMENT_SPEED
+        if check[K_d]:
+            player_2.face = "left"
+            player_2.x -= MOVEMENT_SPEED
+        if check[K_g]:
+            player_2.face = "right"
+            player_2.x += MOVEMENT_SPEED
+        elif check[K_r] == False and check[K_f] == False and check[K_d] == False and check[K_g] == False:
+            player_2.face = "idle"
+        SCREEN.fill((128, 128, 128))
+        player_1.draw(SCREEN)
+        player_2.draw(SCREEN)
+        monster_0.draw(SCREEN)
+        monster_1.draw(SCREEN)
+        monster_2.draw(SCREEN)
+        monster_3.draw(SCREEN)
+        monster_4.draw(SCREEN)
+        monster_5.draw(SCREEN)
+        monster_6.draw(SCREEN)
+        monster_7.draw(SCREEN)
+        monster_8.draw(SCREEN)
+        monster_9.draw(SCREEN)
     if gamemode == "s_minigame":
         for ycoord in range(-512,4288,64):
             for xcoord in range(0,640,64):
@@ -585,32 +612,10 @@ while True:
                 SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
         player_1.draw(SCREEN)
         player_2.draw(SCREEN)
-    if gamemode == "singleplayer":
-        SCREEN.fill((128, 128, 128))
-        player_1.draw(SCREEN)
-        monster_0.draw(SCREEN)
-        monster_1.draw(SCREEN)
-        monster_2.draw(SCREEN)
-        monster_3.draw(SCREEN)
-        monster_4.draw(SCREEN)
-        monster_5.draw(SCREEN)
-        monster_6.draw(SCREEN)
-        monster_7.draw(SCREEN)
-        monster_8.draw(SCREEN)
-        monster_9.draw(SCREEN)
-    if gamemode == "multiplayer":
-        SCREEN.fill((128, 128, 128))
-        player_1.draw(SCREEN)
-        player_2.draw(SCREEN)
-        monster_0.draw(SCREEN)
-        monster_1.draw(SCREEN)
-        monster_2.draw(SCREEN)
-        monster_3.draw(SCREEN)
-        monster_4.draw(SCREEN)
-        monster_5.draw(SCREEN)
-        monster_6.draw(SCREEN)
-        monster_7.draw(SCREEN)
-        monster_8.draw(SCREEN)
-        monster_9.draw(SCREEN)
+    if gamemode == "outro":
+        pygame.mixer.Sound.play(OUTRO)
+        gamemode == "menu"
+    if gamemode != "outro":
+        pygame.mixer.Sound.stop(OUTRO)
     pygame.display.update()
     dt = CLOCK.tick(FPS)
