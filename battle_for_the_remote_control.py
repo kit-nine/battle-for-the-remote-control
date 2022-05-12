@@ -118,14 +118,26 @@ for i in range(4):
 # player class
 class Player:
     global MOVEMENT_SPEED
-    def __init__(self, x, y, framerate, proj_list):
+    def __init__(self, x, y, framerate, proj_list, character):
         self.x = x
         self.y = y
         self.proj_list = proj_list
+        self.character = character
         self.face = "back"
         self.frame = 0
         self.cycle = 0
-        self.current_sprite_list = c1blist
+        if self.character == 1:
+            self.current_sprite_list = c1ilist
+        if self.character == 2:
+            self.current_sprite_list = c2ilist
+        if self.character == 3:
+            self.current_sprite_list = c3ilist
+        if self.character == 4:
+            self.current_sprite_list = c4ilist
+        if self.character == 5:
+            self.current_sprite_list = c5ilist
+        if self.character == 6:
+            self.current_sprite_list = c6ilist
         self.current_sprite = self.current_sprite_list[self.frame]
         self.interval = int(1000/framerate)
 
@@ -137,15 +149,59 @@ class Player:
         if self.frame >= len(self.current_sprite_list):
             self.frame = 0
         if self.face == "back":
-            self.current_sprite_list = c1blist
+            if self.character == 1:
+                self.current_sprite_list = c1blist
+            if self.character == 2:
+                self.current_sprite_list = c2blist
+            if self.character == 3:
+                self.current_sprite_list = c3blist
+            if self.character == 4:
+                self.current_sprite_list = c4blist
+            if self.character == 5:
+                self.current_sprite_list = c5blist
+            if self.character == 6:
+                self.current_sprite_list = c6blist
         if self.face == "forward":
-            self.current_sprite_list = c1flist
+            if self.character == 1:
+                self.current_sprite_list = c1flist
+            if self.character == 2:
+                self.current_sprite_list = c2flist
+            if self.character == 3:
+                self.current_sprite_list = c3flist
+            if self.character == 4:
+                self.current_sprite_list = c4flist
+            if self.character == 5:
+                self.current_sprite_list = c5flist
+            if self.character == 6:
+                self.current_sprite_list = c6flist
         if self.face == "right":
-            self.current_sprite_list = c1rlist
+            if self.character == 1:
+                self.current_sprite_list = c1rlist
+            if self.character == 2:
+                self.current_sprite_list = c2rlist
+            if self.character == 3:
+                self.current_sprite_list = c3rlist
+            if self.character == 4:
+                self.current_sprite_list = c4rlist
+            if self.character == 5:
+                self.current_sprite_list = c5rlist
+            if self.character == 6:
+                self.current_sprite_list = c6rlist
         if self.face == "left":
-            self.current_sprite_list = c1llist
+            if self.character == 1:
+                self.current_sprite_list = c1rlist
+            if self.character == 2: self.current_sprite_list = c2rlist
+            if self.character == 3: self.current_sprite_list = c3rlist
+            if self.character == 4: self.current_sprite_list = c4rlist
+            if self.character == 5: self.current_sprite_list = c5rlist
+            if self.character == 6: self.current_sprite_list = c6rlist
         if self.face == "idle":
-            self.current_sprite_list = c1ilist
+            if self.character == 1: self.current_sprite_list = c1ilist
+            if self.character == 2: self.current_sprite_list = c2ilist
+            if self.character == 3: self.current_sprite_list = c3ilist
+            if self.character == 4: self.current_sprite_list = c4ilist
+            if self.character == 5: self.current_sprite_list = c5ilist
+            if self.character == 6: self.current_sprite_list = c6ilist
         self.current_sprite = self.current_sprite_list[self.frame]
 
     def draw(self,surface):
@@ -153,20 +209,13 @@ class Player:
         surface.blit(self.current_sprite,(self.x,self.y))
     
     def shoot(self):
-        if self.face == "back" or self.face == "idle":
-            self.proj_list.append(("0", self.y))
-        if self.face == "forward":
-            self.proj_list.append(("1", self.y + 19))
-        if self.face == "left":
-            self.proj_list.append(("2", self.x))
-        if self.face == "right":
-            self.proj_list.append(("3", self.x + 20))
+        pass
     
     def block(self):
         pass
 # make the players
-player_1 = Player(250,250,6,p1_proj_list)
-player_2 = Player(250,250,6,p2_proj_list)
+player_1 = Player(250,250,6,p1_proj_list,3)
+player_2 = Player(250,250,6,p2_proj_list,1)
 # color monster class
 class ColorMonster:
     def __init__(self,x,y,framerate,monster):
