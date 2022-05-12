@@ -1,7 +1,9 @@
+from asyncio import format_helpers
 import pygame, sys, random
 from pygame.locals import *
 pygame.init()
-
+pygame.mixer.init()
+# constants
 SCREEN = pygame.display.set_mode((640, 480))
 CLOCK = pygame.time.Clock()
 FPS = 30
@@ -17,10 +19,12 @@ LEFT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_left.png"
 RIGHT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_right.png").convert()
 TILE0 = pygame.image.load("tiling/tile0.png").convert()
 TILE1 = pygame.image.load("tiling/tile1.png").convert()
-
+SELECT = pygame.mixer.Sound("sounds/selection.wav")
+STEP = pygame.mixer.Sound("sounds/footstep.wav")
+OUTRO = pygame.mixer.Sound("sounds/outro.wav")
+# background setup
 background = []
 temp = []
-
 for row in range(38):
     for object in range(5):
         temp.append(TILE0)
@@ -32,17 +36,11 @@ for row in range(38):
         temp.append(TILE0)
     background.append(temp)
     temp = []
-
 background_dict = {}
-
 for row in range(75):
     for col in range(10):
         background_dict[str((row,col))] = str(((row*64-512),col*64))
-
-# temp_string = background_dict.get("(17, 4)")
-# temp_string = temp_string[1:len(temp_string)-1:]
-# tuple = eval(temp_string)
-
+# variables
 left_click = False
 mouse_x,mouse_y = 0,0
 mouse_speed = 5
@@ -51,7 +49,10 @@ background_reset = True
 dt = 0
 c1ilist,c1blist,c1flist,c1llist,c1rlist,c2ilist,c2blist,c2flist,c2llist,c2rlist,c3ilist,c3blist,c3flist,c3llist,c3rlist,c4ilist,c4blist,c4flist,c4llist,c4rlist,c5ilist,c5blist,c5flist,c5llist,c5rlist,c6ilist,c6blist,c6flist,c6llist,c6rlist = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
 m1ilist,m1blist,m1flist,m1llist,m1rlist,m2ilist,m2blist,m2flist,m2llist,m2rlist,m3ilist,m3blist,m3flist,m3llist,m3rlist,m4ilist,m4blist,m4flist,m4llist,m4rlist,m5ilist,m5blist,m5flist,m5llist,m5rlist,m6ilist,m6blist,m6flist,m6llist,m6rlist = [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
-
+p1_proj_list = []
+p2_proj_list = []
+playing_sound_select,playing_sound_step,playing_sound_outro = False, False, False
+# loading sprites
 for i in range(4):
     # characters
     c1ilist.append(pygame.image.load("c1\c1b" + str(0) + ".png").convert_alpha())
@@ -115,22 +116,19 @@ for i in range(4):
     m6flist.append(pygame.image.load("m6\m6f" + str(i) + ".png").convert_alpha())
     m6llist.append(pygame.image.load("m6\m6l" + str(i) + ".png").convert_alpha())
     m6rlist.append(pygame.image.load("m6\m6r" + str(i) + ".png").convert_alpha())
-
-p1_proj_list = []
-p2_proj_list = []
-
+# player class
 class Player:
     global MOVEMENT_SPEED
     def __init__(self, x, y, framerate, proj_list):
         self.x = x
         self.y = y
+        self.proj_list = proj_list
         self.face = "back"
         self.frame = 0
         self.cycle = 0
         self.current_sprite_list = c1blist
         self.current_sprite = self.current_sprite_list[self.frame]
         self.interval = int(1000/framerate)
-        self.proj_list = proj_list
 
     def update(self):
         self.cycle += dt
@@ -167,10 +165,10 @@ class Player:
     
     def block(self):
         pass
-
+# make the players
 player_1 = Player(250,250,6,p1_proj_list)
 player_2 = Player(250,250,6,p2_proj_list)
-
+# color monster class
 class ColorMonster:
     def __init__(self,x,y,framerate,monster):
         self.x = x
@@ -360,7 +358,7 @@ class ColorMonster:
         self.monster_rect = pygame.Rect(self.x,self.y,17,19)
         if self.monster_rect.colliderect(self.player_rect):
             gamemode = "minigame"
-
+# make the monsters
 monster_0 = ColorMonster(50,50,6,1)
 monster_1 = ColorMonster(50,50,6,2)
 monster_2 = ColorMonster(50,50,6,3)
@@ -371,11 +369,10 @@ monster_6 = ColorMonster(50,50,6,2)
 monster_7 = ColorMonster(50,50,6,3)
 monster_8 = ColorMonster(50,50,6,4)
 monster_9 = ColorMonster(50,50,6,5)
-
-
+# projectile class
 class Projectile:
     pass
-
+# cursor class
 class Cursor:
     def __init__(self,player,x,y,speed):
         self.player = player
@@ -391,9 +388,9 @@ class Cursor:
         pygame.draw.polygon(self.cursor,(255,255,255),[(0,0),(7,7),(5,9),(7,11),(5,12),(3,9),(0,11)])
         pygame.draw.polygon(self.cursor,(0,0,0),[(0,0),(7,7),(5,9),(7,11),(5,12),(3,9),(0,11)],1)
         surface.blit(self.cursor,(self.x,self.y))
-
+# make the cursor
 P1C = Cursor(1,400,300,mouse_speed)
-
+# button profile class
 class ButtonProfile:
     def __init__(self, button_color, outline_color, outline_width, text_color, hover_color, font_type, font_size):
         self.button_color = button_color
@@ -407,7 +404,7 @@ class ButtonProfile:
         self.hover_text = text_color
         self.antialias = False
         self.font = pygame.font.Font(self.font_type, self.font_size)
-
+# button class
 class Button:
     def __init__(self, xpos, ypos, width, height, label, value, button_profile):
         self.rect = pygame.Rect(xpos, ypos, width, height)
@@ -432,18 +429,18 @@ class Button:
             self.button_color = self.button_profile.hover_color
         else:
             self.button_color = self.button_profile.button_color
-
+# make the button profile
 profile_0 = ButtonProfile((198,198,198), (20,20,20), 10, (20,20,20), (255,0,0), None, 18)
-
+# make all the buttons
 singleplayer = Button(86, 209, 155, 60, "Singleplayer", 0, profile_0)
 multiplayer = Button(391, 210, 155, 60, "Multiplayer", 1, profile_0)
 introduction = Button(162, 309, 150, 49, "Introduction", 2, profile_0)
 credits_ = Button(347, 308, 99, 48, "Credits", 3, profile_0)
 instructions = Button(240, 395, 162, 38, "Instructions", 4, profile_0)
-
+# put all the buttons in a list
 button_list = [singleplayer,multiplayer,introduction,credits_,instructions]
 
-
+# MAIN GAME LOOP
 
 while True:
     if gamemode == "menu": SCREEN.blit(MENU,(0,0))
@@ -462,14 +459,22 @@ while True:
                     if event.key == K_SPACE:
                         if singleplayer.rect.collidepoint(P1C.x,P1C.y):
                             gamemode = "singleplayer"
+                            playing_sound_select = True
                         elif multiplayer.rect.collidepoint(P1C.x,P1C.y):
                             gamemode = "multiplayer"
+                            playing_sound_select = True
                         elif introduction.rect.collidepoint(P1C.x,P1C.y):
                             gamemode = "introduction"
+                            playing_sound_select = True
                         elif credits_.rect.collidepoint(P1C.x,P1C.y):
                             gamemode = "credits"
+                            playing_sound_select = True
                         elif instructions.rect.collidepoint(P1C.x,P1C.y):
                             gamemode = "instructions"
+                            playing_sound_select = True
+                        if playing_sound_select == True:
+                            pygame.mixer.Sound.play(SELECT)
+                            playing_sound_select = False
                 else:
                     if event.key == K_ESCAPE:
                         gamemode = "menu"
@@ -486,7 +491,6 @@ while True:
                         player_1.shoot()
                     if event.key == K_RETURN:
                         player_1.block()
-
     check = pygame.key.get_pressed()
     if ARCADE_MODE == False:
         if gamemode == "menu":
@@ -514,7 +518,6 @@ while True:
                 player_1.x += MOVEMENT_SPEED
             elif check[K_w] == False and check[K_s] == False and check[K_a] == False and check[K_d] == False:
                 player_1.face = "idle"
-            
     if gamemode == "menu":
         for each_button in button_list:
             each_button.draw(SCREEN)
@@ -545,4 +548,4 @@ while True:
         monster_8.draw(SCREEN)
         monster_9.draw(SCREEN)
     pygame.display.update()
-    CLOCK.tick(FPS)
+    dt = CLOCK.tick(FPS)
