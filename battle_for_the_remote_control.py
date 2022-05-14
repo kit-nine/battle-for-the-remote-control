@@ -1,7 +1,7 @@
 import pygame, sys, random
 from pygame.locals import *
 pygame.init()
-pygame.mixer.init()
+pygame.mixer.init(48000,-16,2,1024)
 # constants
 SCREEN = pygame.display.set_mode((640, 480))
 CLOCK = pygame.time.Clock()
@@ -21,6 +21,7 @@ TILE1 = pygame.image.load("tiling/tile1.png").convert()
 SELECT = pygame.mixer.Sound("sounds/selection.wav")
 STEP = pygame.mixer.Sound("sounds/footstep.wav")
 OUTRO = pygame.mixer.Sound("sounds/outro.wav")
+MINIGAME = pygame.image.load("minigame.png")
 # background setup
 background = []
 temp = []
@@ -51,6 +52,7 @@ m1ilist,m1blist,m1flist,m1llist,m1rlist,m2ilist,m2blist,m2flist,m2llist,m2rlist,
 p1_proj_list = []
 p2_proj_list = []
 playing_sound_select,playing_sound_step,playing_sound_outro = False, False, False
+character = "default"
 # loading sprites
 for i in range(4):
     # characters
@@ -126,18 +128,12 @@ class Player:
         self.face = "back"
         self.frame = 0
         self.cycle = 0
-        if self.character == 1:
-            self.current_sprite_list = c1ilist
-        if self.character == 2:
-            self.current_sprite_list = c2ilist
-        if self.character == 3:
-            self.current_sprite_list = c3ilist
-        if self.character == 4:
-            self.current_sprite_list = c4ilist
-        if self.character == 5:
-            self.current_sprite_list = c5ilist
-        if self.character == 6:
-            self.current_sprite_list = c6ilist
+        if self.character == 1 or self.character == "default": self.current_sprite_list = c1ilist
+        if self.character == 2: self.current_sprite_list = c2ilist
+        if self.character == 3: self.current_sprite_list = c3ilist
+        if self.character == 4: self.current_sprite_list = c4ilist
+        if self.character == 5: self.current_sprite_list = c5ilist
+        if self.character == 6: self.current_sprite_list = c6ilist
         self.current_sprite = self.current_sprite_list[self.frame]
         self.interval = int(1000/framerate)
 
@@ -149,54 +145,35 @@ class Player:
         if self.frame >= len(self.current_sprite_list):
             self.frame = 0
         if self.face == "back":
-            if self.character == 1:
-                self.current_sprite_list = c1blist
-            if self.character == 2:
-                self.current_sprite_list = c2blist
-            if self.character == 3:
-                self.current_sprite_list = c3blist
-            if self.character == 4:
-                self.current_sprite_list = c4blist
-            if self.character == 5:
-                self.current_sprite_list = c5blist
-            if self.character == 6:
-                self.current_sprite_list = c6blist
+            if self.character == 1 or self.character == "default": self.current_sprite_list = c1blist
+            if self.character == 2: self.current_sprite_list = c2blist
+            if self.character == 3: self.current_sprite_list = c3blist
+            if self.character == 4: self.current_sprite_list = c4blist
+            if self.character == 5: self.current_sprite_list = c5blist
+            if self.character == 6: self.current_sprite_list = c6blist
         if self.face == "forward":
-            if self.character == 1:
-                self.current_sprite_list = c1flist
-            if self.character == 2:
-                self.current_sprite_list = c2flist
-            if self.character == 3:
-                self.current_sprite_list = c3flist
-            if self.character == 4:
-                self.current_sprite_list = c4flist
-            if self.character == 5:
-                self.current_sprite_list = c5flist
-            if self.character == 6:
-                self.current_sprite_list = c6flist
+            if self.character == 1 or self.character == "default": self.current_sprite_list = c1flist
+            if self.character == 2: self.current_sprite_list = c2flist
+            if self.character == 3: self.current_sprite_list = c3flist
+            if self.character == 4: self.current_sprite_list = c4flist
+            if self.character == 5: self.current_sprite_list = c5flist
+            if self.character == 6: self.current_sprite_list = c6flist
         if self.face == "right":
-            if self.character == 1:
-                self.current_sprite_list = c1rlist
-            if self.character == 2:
-                self.current_sprite_list = c2rlist
-            if self.character == 3:
-                self.current_sprite_list = c3rlist
-            if self.character == 4:
-                self.current_sprite_list = c4rlist
-            if self.character == 5:
-                self.current_sprite_list = c5rlist
-            if self.character == 6:
-                self.current_sprite_list = c6rlist
-        if self.face == "left":
-            if self.character == 1:
-                self.current_sprite_list = c1rlist
+            if self.character == 1 or self.character == "default": self.current_sprite_list = c1rlist
             if self.character == 2: self.current_sprite_list = c2rlist
             if self.character == 3: self.current_sprite_list = c3rlist
             if self.character == 4: self.current_sprite_list = c4rlist
             if self.character == 5: self.current_sprite_list = c5rlist
             if self.character == 6: self.current_sprite_list = c6rlist
+        if self.face == "left":
+            if self.character == 1 or self.character == "default": self.current_sprite_list = c1llist
+            if self.character == 2: self.current_sprite_list = c2llist
+            if self.character == 3: self.current_sprite_list = c3llist
+            if self.character == 4: self.current_sprite_list = c4llist
+            if self.character == 5: self.current_sprite_list = c5llist
+            if self.character == 6: self.current_sprite_list = c6llist
         if self.face == "idle":
-            if self.character == 1: self.current_sprite_list = c1ilist
+            if self.character == 1 or self.character == "default": self.current_sprite_list = c1ilist
             if self.character == 2: self.current_sprite_list = c2ilist
             if self.character == 3: self.current_sprite_list = c3ilist
             if self.character == 4: self.current_sprite_list = c4ilist
@@ -214,8 +191,8 @@ class Player:
     def block(self):
         pass
 # make the players
-player_1 = Player(250,250,6,p1_proj_list,3)
-player_2 = Player(250,250,6,p2_proj_list,1)
+player_1 = Player(250,250,6,p1_proj_list,character)
+player_2 = Player(250,250,6,p2_proj_list,character)
 # color monster class
 class ColorMonster:
     def __init__(self,x,y,framerate,monster):
@@ -526,6 +503,7 @@ while True:
                     elif outro.rect.collidepoint(P1C.x,P1C.y):
                         gamemode = "outro"
                         playing_sound_select = True
+                        playing_sound_outro = True
                     if playing_sound_select == True:
                         pygame.mixer.Sound.play(SELECT)
                         playing_sound_select = False
@@ -570,7 +548,14 @@ while True:
                 value = each_button.value
         P1C.draw(SCREEN)
     if gamemode == "singleplayer":
-        SCREEN.fill((0,0,0))
+        for ycoord in range(-512,4288,64):
+            for xcoord in range(0,640,64):
+                coordinate_pair = str("(" + str(ycoord) + ", ")
+                coordinate_pair += str(str(xcoord) + ")")
+                key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
+                key = key[1:len(key)-1:]
+                tuple = eval(key)
+                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
         if check[K_UP]:
             player_1.face = "forward"
             player_1.y -= MOVEMENT_SPEED
@@ -585,7 +570,6 @@ while True:
             player_1.x += MOVEMENT_SPEED
         elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
             player_1.face = "idle"
-        SCREEN.fill((128, 128, 128))
         player_1.draw(SCREEN)
         monster_0.draw(SCREEN)
         monster_1.draw(SCREEN)
@@ -598,7 +582,14 @@ while True:
         monster_8.draw(SCREEN)
         monster_9.draw(SCREEN)
     if gamemode == "multiplayer":
-        SCREEN.fill((0,0,0))
+        for ycoord in range(-512,4288,64):
+            for xcoord in range(0,640,64):
+                coordinate_pair = str("(" + str(ycoord) + ", ")
+                coordinate_pair += str(str(xcoord) + ")")
+                key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
+                key = key[1:len(key)-1:]
+                tuple = eval(key)
+                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
         if check[K_UP]:
             player_1.face = "forward"
             player_1.y -= MOVEMENT_SPEED
@@ -627,7 +618,6 @@ while True:
             player_2.x += MOVEMENT_SPEED
         elif check[K_r] == False and check[K_f] == False and check[K_d] == False and check[K_g] == False:
             player_2.face = "idle"
-        SCREEN.fill((128, 128, 128))
         player_1.draw(SCREEN)
         player_2.draw(SCREEN)
         monster_0.draw(SCREEN)
@@ -641,30 +631,68 @@ while True:
         monster_8.draw(SCREEN)
         monster_9.draw(SCREEN)
     if gamemode == "s_minigame":
-        for ycoord in range(-512,4288,64):
-            for xcoord in range(0,640,64):
-                coordinate_pair = str("(" + str(ycoord) + ", ")
-                coordinate_pair += str(str(xcoord) + ")")
-                key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
-                key = key[1:len(key)-1:]
-                tuple = eval(key)
-                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
+        SCREEN.blit(MINIGAME,(0,0))
+        if check[K_UP]:
+            player_1.face = "forward"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.y -= MOVEMENT_SPEED
+        if check[K_DOWN]:
+            player_1.face = "back"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.y += MOVEMENT_SPEED
+        if check[K_LEFT]:
+            player_1.face = "left"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.x -= MOVEMENT_SPEED
+        if check[K_RIGHT]:
+            player_1.face = "right"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.x += MOVEMENT_SPEED
+        elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
+            player_1.face = "idle"
         player_1.draw(SCREEN)
     if gamemode == "m_minigame":
-        for ycoord in range(-512,4288,64):
-            for xcoord in range(0,640,64):
-                coordinate_pair = str("(" + str(ycoord) + ", ")
-                coordinate_pair += str(str(xcoord) + ")")
-                key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
-                key = key[1:len(key)-1:]
-                tuple = eval(key)
-                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
+        SCREEN.blit(MINIGAME,(0,0))
+        if check[K_UP]:
+            player_1.face = "forward"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.y -= MOVEMENT_SPEED
+        if check[K_DOWN]:
+            player_1.face = "back"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.y += MOVEMENT_SPEED
+        if check[K_LEFT]:
+            player_1.face = "left"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.x -= MOVEMENT_SPEED
+        if check[K_RIGHT]:
+            player_1.face = "right"
+            if player_1.x > 0 and player_1.x < 640 and player_1.y > 0 and player_1.y < 480:
+                player_1.x += MOVEMENT_SPEED
+        if check[K_r]:
+            player_2.face = "forward"
+            if player_2.x > 0 and player_2.x < 640 and player_2.y > 0 and player_2.y < 480:
+                player_2.y -= MOVEMENT_SPEED
+        if check[K_f]:
+            player_2.face = "back"
+            if player_2.x > 0 and player_2.x < 640 and player_2.y > 0 and player_2.y < 480:
+                player_2.y += MOVEMENT_SPEED
+        if check[K_d]:
+            player_2.face = "left"
+            if player_2.x > 0 and player_2.x < 640 and player_2.y > 0 and player_2.y < 480:
+                player_2.x -= MOVEMENT_SPEED
+        if check[K_g]:
+            player_2.face = "right"
+            if player_2.x > 0 and player_2.x < 640 and player_2.y > 0 and player_2.y < 480:
+                player_2.x += MOVEMENT_SPEED
+        elif check[K_r] == False and check[K_f] == False and check[K_d] == False and check[K_g] == False:
+            player_2.face = "idle"
         player_1.draw(SCREEN)
         player_2.draw(SCREEN)
     if gamemode == "outro":
-        pygame.mixer.Sound.play(OUTRO)
-        gamemode == "menu"
-    if gamemode != "outro":
-        pygame.mixer.Sound.stop(OUTRO)
+        if playing_sound_outro == True:
+            pygame.mixer.Sound.play(OUTRO)
+            playing_sound_outro = False
+            gamemode = "menu"
     pygame.display.update()
     dt = CLOCK.tick(FPS)
