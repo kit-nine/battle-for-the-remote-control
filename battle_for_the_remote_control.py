@@ -53,6 +53,7 @@ p1_proj_list = []
 p2_proj_list = []
 playing_sound_select,playing_sound_step,playing_sound_outro = False, False, False
 character = "default"
+bg_movement = 0
 # loading sprites
 for i in range(4):
     # characters
@@ -387,6 +388,8 @@ class ColorMonster:
             gamemode = "m_minigame"
 # make the monsters
 monster_0 = ColorMonster(50,50,6,1)
+# list of monsters
+monster_list = [monster_0]
 # projectile class
 class Projectile:
     pass
@@ -464,10 +467,6 @@ button_list = [singleplayer,multiplayer,introduction,credits_,instructions,outro
 
 while True:
     if gamemode == "menu": SCREEN.blit(MENU,(0,0))
-    elif gamemode == "singleplayer": pass
-    elif gamemode == "multiplayer": pass
-    elif gamemode == "introduction": pass
-    elif gamemode == "credits_" : pass
     P1C.clicked = False
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -545,10 +544,14 @@ while True:
                 key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
                 key = key[1:len(key)-1:]
                 tuple = eval(key)
-                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
+                bg_y = ycoord + bg_movement
+                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, bg_y))
         if check[K_UP]:
             player_1.face = "forward"
-            player_1.y -= MOVEMENT_SPEED
+            bg_movement += MOVEMENT_SPEED
+            for i in monster_list:
+                if i.face == "left" or i.face == "right":
+                    i.y += MOVEMENT_SPEED    
         if check[K_DOWN]:
             player_1.face = "back"
             if player_1.y < 460:
