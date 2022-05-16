@@ -387,15 +387,6 @@ class ColorMonster:
             gamemode = "m_minigame"
 # make the monsters
 monster_0 = ColorMonster(50,50,6,1)
-monster_1 = ColorMonster(50,50,6,2)
-monster_2 = ColorMonster(50,50,6,3)
-monster_3 = ColorMonster(50,50,6,4)
-monster_4 = ColorMonster(50,50,6,5)
-monster_5 = ColorMonster(50,50,6,1)
-monster_6 = ColorMonster(50,50,6,2)
-monster_7 = ColorMonster(50,50,6,3)
-monster_8 = ColorMonster(50,50,6,4)
-monster_9 = ColorMonster(50,50,6,5)
 # projectile class
 class Projectile:
     pass
@@ -486,24 +477,23 @@ while True:
             if gamemode == "menu":
                 if event.key == K_SPACE:
                     if singleplayer.rect.collidepoint(P1C.x,P1C.y):
-                        gamemode = "singleplayer"
                         playing_sound_select = True
+                        gamemode = "singleplayer"                        
                     elif multiplayer.rect.collidepoint(P1C.x,P1C.y):
+                        playing_sound_select = True
                         gamemode = "multiplayer"
-                        playing_sound_select = True
                     elif introduction.rect.collidepoint(P1C.x,P1C.y):
-                        gamemode = "introduction"
                         playing_sound_select = True
+                        gamemode = "introduction"                        
                     elif credits_.rect.collidepoint(P1C.x,P1C.y):
+                        playing_sound_select = True
                         gamemode = "credits"
-                        playing_sound_select = True
                     elif instructions.rect.collidepoint(P1C.x,P1C.y):
+                        playing_sound_select = True
                         gamemode = "instructions"
-                        playing_sound_select = True
                     elif outro.rect.collidepoint(P1C.x,P1C.y):
-                        gamemode = "outro"
                         playing_sound_select = True
-                        playing_sound_outro = True
+                        gamemode = "outro"
                     if playing_sound_select == True:
                         pygame.mixer.Sound.play(SELECT)
                         playing_sound_select = False
@@ -561,26 +551,20 @@ while True:
             player_1.y -= MOVEMENT_SPEED
         if check[K_DOWN]:
             player_1.face = "back"
-            player_1.y += MOVEMENT_SPEED
+            if player_1.y < 460:
+                player_1.y += MOVEMENT_SPEED
         if check[K_LEFT]:
             player_1.face = "left"
-            player_1.x -= MOVEMENT_SPEED
+            if player_1.x > 0:
+                player_1.x -= MOVEMENT_SPEED
         if check[K_RIGHT]:
             player_1.face = "right"
-            player_1.x += MOVEMENT_SPEED
+            if player_1.x < 620:
+                player_1.x += MOVEMENT_SPEED
         elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
             player_1.face = "idle"
         player_1.draw(SCREEN)
         monster_0.draw(SCREEN)
-        monster_1.draw(SCREEN)
-        monster_2.draw(SCREEN)
-        monster_3.draw(SCREEN)
-        monster_4.draw(SCREEN)
-        monster_5.draw(SCREEN)
-        monster_6.draw(SCREEN)
-        monster_7.draw(SCREEN)
-        monster_8.draw(SCREEN)
-        monster_9.draw(SCREEN)
     if gamemode == "multiplayer":
         for ycoord in range(-512,4288,64):
             for xcoord in range(0,640,64):
@@ -621,15 +605,6 @@ while True:
         player_1.draw(SCREEN)
         player_2.draw(SCREEN)
         monster_0.draw(SCREEN)
-        monster_1.draw(SCREEN)
-        monster_2.draw(SCREEN)
-        monster_3.draw(SCREEN)
-        monster_4.draw(SCREEN)
-        monster_5.draw(SCREEN)
-        monster_6.draw(SCREEN)
-        monster_7.draw(SCREEN)
-        monster_8.draw(SCREEN)
-        monster_9.draw(SCREEN)
     if gamemode == "s_minigame":
         SCREEN.blit(MINIGAME,(0,0))
         if check[K_UP]:
@@ -690,9 +665,8 @@ while True:
         player_1.draw(SCREEN)
         player_2.draw(SCREEN)
     if gamemode == "outro":
-        if playing_sound_outro == True:
-            pygame.mixer.Sound.play(OUTRO)
-            playing_sound_outro = False
-            gamemode = "menu"
+        SCREEN.fill((0,0,0))
+        pygame.mixer.Sound.play(OUTRO)
+        gamemode = "menu"
     pygame.display.update()
     dt = CLOCK.tick(FPS)
