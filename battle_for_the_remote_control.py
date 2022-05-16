@@ -22,24 +22,7 @@ SELECT = pygame.mixer.Sound("sounds/selection.wav")
 STEP = pygame.mixer.Sound("sounds/footstep.wav")
 OUTRO = pygame.mixer.Sound("sounds/outro.wav")
 MINIGAME = pygame.image.load("minigame.png")
-# background setup
-background = []
-temp = []
-for row in range(38):
-    for object in range(5):
-        temp.append(TILE0)
-        temp.append(TILE1)
-    background.append(temp)
-    temp = []
-    for object in range(5):
-        temp.append(TILE1)
-        temp.append(TILE0)
-    background.append(temp)
-    temp = []
-background_dict = {}
-for row in range(75):
-    for col in range(10):
-        background_dict[str((row,col))] = str(((row*64-512),col*64))
+GAME = pygame.image.load("game.png")
 # variables
 left_click = False
 mouse_x,mouse_y = 0,0
@@ -53,7 +36,7 @@ p1_proj_list = []
 p2_proj_list = []
 playing_sound_select,playing_sound_step,playing_sound_outro = False, False, False
 character = "default"
-bg_movement = 0
+bg_y_pos = -4313
 # loading sprites
 for i in range(4):
     # characters
@@ -88,32 +71,26 @@ for i in range(4):
     c6llist.append(pygame.image.load("c6\c6l" + str(i) + ".png").convert_alpha())
     c6rlist.append(pygame.image.load("c6\c6r" + str(i) + ".png").convert_alpha())
     # color monsters
-    m1ilist.append(pygame.image.load("m1\m1b" + str(0) + ".png").convert_alpha())
     m1blist.append(pygame.image.load("m1\m1b" + str(i) + ".png").convert_alpha())
     m1flist.append(pygame.image.load("m1\m1f" + str(i) + ".png").convert_alpha())
     m1llist.append(pygame.image.load("m1\m1l" + str(i) + ".png").convert_alpha())
     m1rlist.append(pygame.image.load("m1\m1r" + str(i) + ".png").convert_alpha())
-    m2ilist.append(pygame.image.load("m2\m2b" + str(0) + ".png").convert_alpha())
     m2blist.append(pygame.image.load("m2\m2b" + str(i) + ".png").convert_alpha())
     m2flist.append(pygame.image.load("m2\m2f" + str(i) + ".png").convert_alpha())
     m2llist.append(pygame.image.load("m2\m2l" + str(i) + ".png").convert_alpha())
     m2rlist.append(pygame.image.load("m2\m2r" + str(i) + ".png").convert_alpha())
-    m3ilist.append(pygame.image.load("m3\m3b" + str(0) + ".png").convert_alpha())
     m3blist.append(pygame.image.load("m3\m3b" + str(i) + ".png").convert_alpha())
     m3flist.append(pygame.image.load("m3\m3f" + str(i) + ".png").convert_alpha())
     m3llist.append(pygame.image.load("m3\m3l" + str(i) + ".png").convert_alpha())
     m3rlist.append(pygame.image.load("m3\m3r" + str(i) + ".png").convert_alpha())
-    m4ilist.append(pygame.image.load("m4\m4b" + str(0) + ".png").convert_alpha())
     m4blist.append(pygame.image.load("m4\m4b" + str(i) + ".png").convert_alpha())
     m4flist.append(pygame.image.load("m4\m4f" + str(i) + ".png").convert_alpha())
     m4llist.append(pygame.image.load("m4\m4l" + str(i) + ".png").convert_alpha())
     m4rlist.append(pygame.image.load("m4\m4r" + str(i) + ".png").convert_alpha())
-    m5ilist.append(pygame.image.load("m5\m5b" + str(0) + ".png").convert_alpha())
     m5blist.append(pygame.image.load("m5\m5b" + str(i) + ".png").convert_alpha())
     m5flist.append(pygame.image.load("m5\m5f" + str(i) + ".png").convert_alpha())
     m5llist.append(pygame.image.load("m5\m5l" + str(i) + ".png").convert_alpha())
     m5rlist.append(pygame.image.load("m5\m5r" + str(i) + ".png").convert_alpha())
-    m6ilist.append(pygame.image.load("m6\m6b" + str(0) + ".png").convert_alpha())
     m6blist.append(pygame.image.load("m6\m6b" + str(i) + ".png").convert_alpha())
     m6flist.append(pygame.image.load("m6\m6f" + str(i) + ".png").convert_alpha())
     m6llist.append(pygame.image.load("m6\m6l" + str(i) + ".png").convert_alpha())
@@ -260,117 +237,35 @@ class ColorMonster:
         self.current_sprite = self.current_sprite_list[self.frame]
 
     def attack(self):
+        if self.x <= 0 or self.x >= 640 or self.y <= 0 or self.y >= 480:
+            if self.direction == 0:
+                self.direction = random.choice("123")
+            if self.direction == 1:
+                self.direction = random.choice("023")
+            if self.direction == 2:
+                self.direction = random.choice("013")
+            if self.direction == 3:
+                self.direction = random.choice("012")
+            if self.x <= 0:
+                self.x = 17
+            if self.x >= 640:
+                self.x = 623
+            if self.y <= 0:
+                self.y = 19
+            if self.y >= 480:
+                self.y = 471
         if self.direction == 0:
             self.face = "forward"
-            if self.y + 19 > 0:
-                self.y -= MOVEMENT_SPEED + 1
-            else:
-                self.direction = random.randint(0,3)
-                if self.direction == 0:
-                    self.y_change = 1
-                elif self.direction == 1:
-                    self.y_change = 2
-                elif self.direction == 2:
-                    self.x_change = 1
-                elif self.direction == 3:
-                    self.x_change = 2
-                if self.x_change == 1:
-                    self.x = 623
-                elif self.x_change == 2:
-                    self.x = 0
-                else:
-                    self.x = random.randint(0,623)
-                if self.y_change == 1:
-                    self.y = 461
-                elif self.y_change == 2:
-                    self.y = 0
-                else:
-                    self.y = random.randint(0,461)
-                self.x_change,self.y_change = 0,0
-                
+            self.y -= MOVEMENT_SPEED
         if self.direction == 1:
             self.face = "back"
-            if self.y < 480:
-                self.y += MOVEMENT_SPEED + 1
-            else:
-                self.direction = random.randint(0,3)
-                if self.direction == 0:
-                    self.y_change = 1
-                elif self.direction == 1:
-                    self.y_change = 2
-                elif self.direction == 2:
-                    self.x_change = 1
-                elif self.direction == 3:
-                    self.x_change = 2
-                if self.x_change == 1:
-                    self.x = 623
-                elif self.x_change == 2:
-                    self.x = 0
-                else:
-                    self.x = random.randint(0,623)
-                if self.y_change == 1:
-                    self.y = 461
-                elif self.y_change == 2:
-                    self.y = 0
-                else:
-                    self.y = random.randint(0,461)
-                self.x_change,self.y_change = 0,0
-                
+            self.y += MOVEMENT_SPEED
         if self.direction == 2:
             self.face = "left"
-            if self.x + 17 > 0:
-                self.x -= MOVEMENT_SPEED + 1
-            else:
-                self.direction = random.randint(0,3)
-                if self.direction == 0:
-                    self.y_change = 1
-                elif self.direction == 1:
-                    self.y_change = 2
-                elif self.direction == 2:
-                    self.x_change = 1
-                elif self.direction == 3:
-                    self.x_change = 2
-                if self.x_change == 1:
-                    self.x = 623
-                elif self.x_change == 2:
-                    self.x = 0
-                else:
-                    self.x = random.randint(0,623)
-                if self.y_change == 1:
-                    self.y = 461
-                elif self.y_change == 2:
-                    self.y = 0
-                else:
-                    self.y = random.randint(0,461)
-                self.x_change,self.y_change = 0,0
-                
+            self.x -= MOVEMENT_SPEED
         if self.direction == 3:
             self.face = "right"
-            if self.x < 640:
-                self.x += MOVEMENT_SPEED + 1
-            else:
-                self.direction = random.randint(0,3)
-                if self.direction == 0:
-                    self.y_change = 1
-                elif self.direction == 1:
-                    self.y_change = 2
-                elif self.direction == 2:
-                    self.x_change = 1
-                elif self.direction == 3:
-                    self.x_change = 2
-                if self.x_change == 1:
-                    self.x = 623
-                elif self.x_change == 2:
-                    self.x = 0
-                else:
-                    self.x = random.randint(0,623)
-                if self.y_change == 1:
-                    self.y = 461
-                elif self.y_change == 2:
-                    self.y = 0
-                else:
-                    self.y = random.randint(0,461)
-                self.x_change,self.y_change = 0,0
+            self.x += MOVEMENT_SPEED
                 
     def draw(self,surface):
         self.attack()
@@ -533,25 +428,22 @@ while True:
             P1C.x += P1C.speed
         for each_button in button_list:
             each_button.draw(SCREEN)
-            if each_button.button_color == profile_0.hover_color and left_click == True:
-                value = each_button.value
         P1C.draw(SCREEN)
     if gamemode == "singleplayer":
-        for ycoord in range(-512,4288,64):
-            for xcoord in range(0,640,64):
-                coordinate_pair = str("(" + str(ycoord) + ", ")
-                coordinate_pair += str(str(xcoord) + ")")
-                key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
-                key = key[1:len(key)-1:]
-                tuple = eval(key)
-                bg_y = ycoord + bg_movement
-                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, bg_y))
+        SCREEN.blit(GAME,(0,bg_y_pos))
         if check[K_UP]:
             player_1.face = "forward"
-            bg_movement += MOVEMENT_SPEED
-            for i in monster_list:
-                if i.face == "left" or i.face == "right":
-                    i.y += MOVEMENT_SPEED    
+            if player_1.y > 240:
+                player_1.y -= MOVEMENT_SPEED
+            else:
+                bg_y_pos += MOVEMENT_SPEED
+                for i in monster_list:
+                    if i.face == "forward":
+                        i.y += MOVEMENT_SPEED
+                    if i.face == "back":
+                        i.y += MOVEMENT_SPEED
+                    if i.face == "left" or i.face == "right":
+                        i.y += MOVEMENT_SPEED
         if check[K_DOWN]:
             player_1.face = "back"
             if player_1.y < 460:
@@ -569,14 +461,7 @@ while True:
         player_1.draw(SCREEN)
         monster_0.draw(SCREEN)
     if gamemode == "multiplayer":
-        for ycoord in range(-512,4288,64):
-            for xcoord in range(0,640,64):
-                coordinate_pair = str("(" + str(ycoord) + ", ")
-                coordinate_pair += str(str(xcoord) + ")")
-                key = list(background_dict.keys())[list(background_dict.values()).index(coordinate_pair)]
-                key = key[1:len(key)-1:]
-                tuple = eval(key)
-                SCREEN.blit(background[tuple[0]][tuple[1]], (xcoord, ycoord))
+        SCREEN.blit(GAME,(0,bg_y_pos))
         if check[K_UP]:
             player_1.face = "forward"
             player_1.y -= MOVEMENT_SPEED
