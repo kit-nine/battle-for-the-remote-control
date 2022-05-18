@@ -6,8 +6,7 @@ pygame.mixer.init(48000,-16,2,1024)
 SCREEN = pygame.display.set_mode((640, 480))
 CLOCK = pygame.time.Clock()
 FPS = 30
-MOVEMENT_SPEED = 5
-ARCADE_MODE = False
+MOVEMENT_SPEED = 4
 MENU = pygame.image.load("Main Menu.png")
 INSTRUCTIONS = pygame.image.load("Instructions.png").convert()
 SPACE_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_space.png").convert()
@@ -16,8 +15,6 @@ UP_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_up.png").co
 DOWN_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_down.png").convert()
 LEFT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_left.png").convert()
 RIGHT_PURPOSE = pygame.image.load("instructions_button_purposes/purpose_right.png").convert()
-TILE0 = pygame.image.load("tiling/tile0.png").convert()
-TILE1 = pygame.image.load("tiling/tile1.png").convert()
 SELECT = pygame.mixer.Sound("sounds/selection.wav")
 STEP = pygame.mixer.Sound("sounds/footstep.wav")
 OUTRO = pygame.mixer.Sound("sounds/outro.wav")
@@ -36,7 +33,7 @@ p1_proj_list = []
 p2_proj_list = []
 playing_sound_select,playing_sound_step,playing_sound_outro = False, False, False
 character = "default"
-bg_y_pos = -4313
+bg_y_pos = -4320
 # loading sprites
 for i in range(4):
     # characters
@@ -168,6 +165,7 @@ class Player:
     
     def block(self):
         pass
+    
 # make the players
 player_1 = Player(250,250,6,p1_proj_list,character)
 player_2 = Player(250,250,6,p2_proj_list,character)
@@ -189,8 +187,6 @@ class ColorMonster:
         self.current_sprite = self.current_sprite_list[self.frame]
         self.interval = int(1000/framerate)
         self.direction = random.randint(0,3)
-        self.x_change = 0
-        self.y_change = 0
 
     def update(self):
         self.cycle += dt
@@ -238,34 +234,31 @@ class ColorMonster:
 
     def attack(self):
         if self.x <= 0 or self.x >= 640 or self.y <= 0 or self.y >= 480:
+            self.direction = int(random.choice("012"))
             if self.direction == 0:
-                self.direction = random.choice("123")
+                self.y = 479
+                self.x = random.randint(1,639)
             if self.direction == 1:
-                self.direction = random.choice("023")
+                self.y = 1
+                self.x = random.randint(1,639)
             if self.direction == 2:
-                self.direction = random.choice("013")
+                self.x = 639
+                self.y = random.randint(1,479)
             if self.direction == 3:
-                self.direction = random.choice("012")
-            if self.x <= 0:
-                self.x = 17
-            if self.x >= 640:
-                self.x = 623
-            if self.y <= 0:
-                self.y = 19
-            if self.y >= 480:
-                self.y = 471
+                self.x = 1
+                self.y = random.randint(1,479)
         if self.direction == 0:
             self.face = "forward"
-            self.y -= MOVEMENT_SPEED
+            self.y -= MOVEMENT_SPEED + 1
         if self.direction == 1:
             self.face = "back"
-            self.y += MOVEMENT_SPEED
+            self.y += MOVEMENT_SPEED + 1
         if self.direction == 2:
             self.face = "left"
-            self.x -= MOVEMENT_SPEED
+            self.x -= MOVEMENT_SPEED + 1
         if self.direction == 3:
             self.face = "right"
-            self.x += MOVEMENT_SPEED
+            self.x += MOVEMENT_SPEED + 1
                 
     def draw(self,surface):
         self.attack()
@@ -283,8 +276,12 @@ class ColorMonster:
             gamemode = "m_minigame"
 # make the monsters
 monster_0 = ColorMonster(50,50,6,1)
+monster_1 = ColorMonster(50,50,6,1)
+monster_2 = ColorMonster(50,50,6,1)
+monster_3 = ColorMonster(50,50,6,1)
+monster_4 = ColorMonster(50,50,6,1)
 # list of monsters
-monster_list = [monster_0]
+monster_list = [monster_0, monster_1, monster_2, monster_3, monster_4]
 # projectile class
 class Projectile:
     pass
@@ -305,7 +302,7 @@ class Cursor:
         pygame.draw.polygon(self.cursor,(0,0,0),[(0,0),(7,7),(5,9),(7,11),(5,12),(3,9),(0,11)],1)
         surface.blit(self.cursor,(self.x,self.y))
 # make the cursor
-P1C = Cursor(1,400,300,mouse_speed)
+P1C = Cursor(1,320,240,mouse_speed)
 # button profile class
 class ButtonProfile:
     def __init__(self, button_color, outline_color, outline_width, text_color, hover_color, font_type, font_size):
@@ -433,9 +430,7 @@ while True:
         SCREEN.blit(GAME,(0,bg_y_pos))
         if check[K_UP]:
             player_1.face = "forward"
-            if player_1.y > 240:
-                player_1.y -= MOVEMENT_SPEED
-            else:
+            if bg_y_pos < 0 and player_1.y <= 240:
                 bg_y_pos += MOVEMENT_SPEED
                 for i in monster_list:
                     if i.face == "forward":
@@ -444,6 +439,9 @@ while True:
                         i.y += MOVEMENT_SPEED
                     if i.face == "left" or i.face == "right":
                         i.y += MOVEMENT_SPEED
+            else:
+                if player_1.y > 0:
+                    player_1.y -= MOVEMENT_SPEED
         if check[K_DOWN]:
             player_1.face = "back"
             if player_1.y < 460:
@@ -459,7 +457,7 @@ while True:
         elif check[K_UP] == False and check[K_DOWN] == False and check[K_LEFT] == False and check[K_RIGHT] == False:
             player_1.face = "idle"
         player_1.draw(SCREEN)
-        monster_0.draw(SCREEN)
+        for i in monster_list: i.draw(SCREEN)
     if gamemode == "multiplayer":
         SCREEN.blit(GAME,(0,bg_y_pos))
         if check[K_UP]:
